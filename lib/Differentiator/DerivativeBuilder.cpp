@@ -204,7 +204,6 @@ static void registerDerivative(Decl* D, Sema& S, const DiffRequest& R) {
               : nullptr);
 
       returnedFD->setAccess(FD->getAccess());
-
       // Check if we're dealing with a template specialization
       if (FD->isFunctionTemplateSpecialization() &&
           !FD->getTemplateInstantiationPattern()->isVariadic()) {
@@ -254,9 +253,10 @@ static void registerDerivative(Decl* D, Sema& S, const DiffRequest& R) {
                   FD->getTemplateSpecializationKindForInstantiation());
             }
           }
-      }
+        }
       }
     }
+
     returnedFD->setImplicitlyInline(FD->isInlined());
 
     for (const FunctionDecl* NFD : FD->redecls()) {
@@ -668,7 +668,7 @@ static void registerDerivative(Decl* D, Sema& S, const DiffRequest& R) {
       result = V.Derive();
     } else if (request.Mode == DiffMode::vector_forward_mode) {
       VectorForwardModeVisitor V(*this, request);
-      result = V.DeriveVectorMode();
+      result = V.Derive();
     } else if (request.Mode == DiffMode::experimental_vector_pushforward) {
       VectorPushForwardModeVisitor V(*this, request);
       result = V.Derive();
@@ -693,7 +693,7 @@ static void registerDerivative(Decl* D, Sema& S, const DiffRequest& R) {
       result = H.Derive();
     } else if (request.Mode == DiffMode::jacobian) {
       JacobianModeVisitor J(*this, request);
-      result = J.DeriveJacobian();
+      result = J.Derive();
     } else if (request.Mode == DiffMode::error_estimation) {
       ReverseModeVisitor R(*this, request);
       InitErrorEstimation(m_ErrorEstHandler, m_EstModel, *this, request);
